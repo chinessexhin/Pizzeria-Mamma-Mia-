@@ -1,0 +1,31 @@
+.header{
+  background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),
+  url('./assets/Header.jpg');
+  background-size: cover;
+  height: 40vh;
+}
+
+.button-container {
+    display: flex;
+    gap: 280px;
+  }
+
+.button-container2 {
+    display: flex;
+    justify-content: flex-start; 
+    gap: 10px; 
+    padding: 10px 0; 
+  }
+
+  .custom-btn {
+    border: 2px solid #fff;
+  }
+  .custom-btn:hover {
+    background-color: #333; 
+    color: #fff;
+    border-color: #fff; 
+  }
+
+.Cards{
+  gap: 20px;
+}
