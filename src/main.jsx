@@ -10,9 +10,11 @@ import React from 'react';
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-    <CartProvider>
-     <App />
-    </CartProvider>
+     <UserProvider>
+       <CartProvider>
+        <App />
+       </CartProvider>
+     </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
 )
