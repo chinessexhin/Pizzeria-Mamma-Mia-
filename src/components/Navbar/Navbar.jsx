@@ -1,4 +1,17 @@
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
+
 const Navbar = () => {
+  const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate ("/");
+  };
+
+  const setActiveClass = ({isActive}) => ( isActive ? "active nav-link" : "nav-link");
+  
   const total = 25000;
   const token = false;
 
