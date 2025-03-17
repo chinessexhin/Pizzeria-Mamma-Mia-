@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
 import { Context } from "../contexts/CartContext";
-
+import './main.css'
 
 export default function PizzasCarrito() {
   const { cart, decreaseCount, increaseCount, totalCart } = useContext(Context);
