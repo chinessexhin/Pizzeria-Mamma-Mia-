@@ -11,9 +11,6 @@ const Navbar = () => {
   };
 
   const setActiveClass = ({isActive}) => ( isActive ? "active nav-link" : "nav-link");
-  
-  const total = 25000;
-  const token = false;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -22,13 +19,13 @@ const Navbar = () => {
         <div className="button-container2">
           <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/Home"}>🍕Home</button>
           <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/login"}>🔐Login</button>
+           <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/logout"}>🔓Logout</button>
           <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/register"}>🔐Register</button>
         </div>
       </div>
 
         <div className="navbar-nav ml-auto justify-content-start">
-         <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/profile"}>Profile 😎👍</button>
-         <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/Cart"}>🛒Total: {}</button>
+         <button type="button" className="btn btn-dark" onClick={() => window.location.href = "/Carrito"}>🛒Total: {}</button>
         </div>
 
     </nav>
