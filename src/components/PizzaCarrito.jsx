@@ -33,7 +33,6 @@ export default function PizzasCarrito() {
               Total
             </td>
             <td>=</td>
-            <td className="fw-bold">{monedaLocal(totalCart)}</td>
           </tr>
         </tfoot>
       </Table>
