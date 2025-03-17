@@ -1,45 +1,69 @@
-import { createContext, useState } from "react";
+import { useState, createContext, useEffect } from 'react';
 
-export const CartContext = createContext();
+export const Context = createContext();
 
-const PizzaProvider = ({ children }) => {
-    const [carrito, setCarrito] = useState([]);
+export default function Provider({ children }) {
+  const [pizzas, setPizzas] = useState([]);
+  const [cart, setCart] = useState([]);
 
-    const addToCart = ({ id, price, name, img }) => {
-      const productoEncontrado = carrito.findIndex((p) => p.id === id)
-
-      const producto = {id, price, name, img, count: 1}
-      if (productoEncontrado >= 0 ){
-          carrito[productoEncontradoIndice].count++
-          setCarrito([...carrito])
-      } else {
-          setCarrito([...carrito, producto])
+  useEffect(() => {
+    const getPizzas = async () => {
+      try {
+        const res = await fetch('/api/pizzas/:id');
+        const data = await res.json();
+        setPizzas(data);
+      } catch (error) {
+        console.error('Error', error);
       }
-  }
+    };
 
-  const increment = (index) => {
-    carrito [index].count++
-    setCarrito([...carrito])
-}
+    getPizzas();
+  }, []);
 
-const decrement = (index) => {
-    carrito [index].count--
-    setCarrito([...carrito])
-}
+  const addCart = (pizza) => {
+    const foundPizza = cart.findIndex((cartPizza) => cartPizza.id === pizza.id);
 
-  const stateGlobal = {
-    carrito,
-    addToCart,
-    increment,
-    decrement
-  }
+    if (foundPizza < 0) {
+      pizza.count = 1;
+      setCart([...cart, pizza]);
+    } else {
+      cart[foundPizza].count++;
+      setCart([...cart]);
+    }
+  };
 
-return (
-    <CartContext.Provider
-      value={ stateGlobal }>
+  const increaseCount = (index) => {
+    cart[index].count++;
+    setCart([...cart]);
+  };
+
+  const decreaseCount = (index) => {
+    if (cart[index].count === 1) {
+      cart.splice(index, 1);
+    } else {
+      cart[index].count--;
+    }
+    setCart([...cart]);
+  };
+
+  const totalCart = cart.reduce(
+    (acumulador, { price, count }) => acumulador + price * count,
+    0
+  );
+
+  return (
+    <Cart.Provider
+      value={{
+        pizzas,
+        cart,
+        setCart,
+        addCart,
+        decreaseCount,
+        increaseCount,
+        totalCart,
+      }}
+    >
       {children}
-    </CartContext.Provider>
-  )
+    </Cart.Provider>
+  );
 }
-
-export default PizzaProvider
