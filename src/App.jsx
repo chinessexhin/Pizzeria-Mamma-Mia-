@@ -1,35 +1,33 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import CartProvider from './context/CartContext';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext'; 
 
-import Navbar from './components/Navbar/Navbar'
-import Footer from './components/Footer/Footer'
-import Home from './pages/Home/Home'
-import Cart from './pages/Cards/Cart'
-import Login from './pages/Login/Login'
-import Registro from './pages/Register/Registro'
-import NotFound from './pages/Notfound/Notfound'
-
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Registro from './pages/Registro';
+import Cart from './pages/Cart';
+import NotFound from './pages/NotFound';
 
 const App = () => {
   return (
-   <CartProvider>
-     <BrowserRouter>
-      <Navbar />
+    <BrowserRouter>
+      <CartProvider>
+        <Navbar />
 
-       <Routes>
-         <Route path='/' element= {<Home />} />
-         <Route path='/login' element= {<Login />} />
-         <Route path='/register' element= {<Registro />} />
-         <Route path='/cart' element= {<Cart />} />
-         <Route path='/404' element= {<NotFound />} />
-       </Routes>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Registro />} />
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/404' element={<NotFound />} />
+        </Routes>
 
-        <Home />
-
-       <Footer />
+        <Footer />
+      </CartProvider>
     </BrowserRouter>
-  <CartProvider/>
   );
 }
 
-export default App
+export default App;
+
