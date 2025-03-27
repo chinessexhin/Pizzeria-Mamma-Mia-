@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Cart from './pages/Cart';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/NotFound/NotFound';
 
 const App = () => {
   return (
