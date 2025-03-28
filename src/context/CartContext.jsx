@@ -1,16 +1,18 @@
+import { useParams } from "react-router-dom";
 import { useState, createContext, useEffect } from 'react';
 
 export const Context = createContext();
 
 export default function Provider({ children }) {
+  const { id } = useParams();
   const [pizzas, setPizzas] = useState([]);
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const getPizzas = async () => {
       try {
-        const res = await fetch('/api/pizzas/:id');
-        const data = await res.json();
+        const response = await fetch(`http://localhost:5000/api/pizzas/${id}`);
+        const data = await response.json();
         setPizzas(data);
       } catch (error) {
         console.error('Error', error);
@@ -18,7 +20,7 @@ export default function Provider({ children }) {
     };
 
     getPizzas();
-  }, []);
+  }, [id]); 
 
   const addCart = (pizza) => {
     const foundPizza = cart.findIndex((cartPizza) => cartPizza.id === pizza.id);
@@ -52,7 +54,7 @@ export default function Provider({ children }) {
   );
 
   return (
-    <Cart.Provider
+    <Context.Provider
       value={{
         pizzas,
         cart,
@@ -64,6 +66,6 @@ export default function Provider({ children }) {
       }}
     >
       {children}
-    </Cart.Provider>
+    </Context.Provider>
   );
 }
