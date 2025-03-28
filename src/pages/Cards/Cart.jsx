@@ -1,12 +1,14 @@
 import { pizzaCart } from "../../../data/pizza";
 import { useState, useContext } from "react";
-import { UserContext } from "../../context/UserProvider"; 
+import { UserContext } from "../../context/UserProvider";
 
 const Cart = () => {
     const [cart, setCart] = useState(pizzaCart);
+    const [successMessage, setSuccessMessage] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState("");
     const { token } = useContext(UserContext);
 
-    const apiUrl = "http://localhost:5000/api/checkouts";
+    const apiUrl = "http://localhost:5000/api/checkouts"; 
 
     const calcularTotal = () => {
         return cart.reduce((total, item) => total + item.price * item.count, 0);
@@ -26,7 +28,7 @@ const Cart = () => {
 
     const handleCheckout = async () => {
         if (!token) {
-            alert("Debes iniciar sesión para realizar una compra.");
+            setErrorMessage("Debes iniciar sesión para realizar una compra.");
             return;
         }
 
@@ -50,11 +52,13 @@ const Cart = () => {
             }
 
             const data = await response.json();
-            alert("Compra realizada con éxito. Código del pedido: " + data.orderId);
-            setCart([]);
+            setSuccessMessage(`Compra realizada con éxito. ID de pedido: ${data.orderId}`);
+            setErrorMessage(""); 
+            setCart([]); 
         } catch (error) {
             console.error("Error en el checkout:", error);
-            alert("Hubo un problema con la compra.");
+            setErrorMessage("Hubo un problema con la compra.");
+            setSuccessMessage("");
         }
     };
 
@@ -96,6 +100,8 @@ const Cart = () => {
                     Confirmar Compra
                 </button>
             </div>
+            {successMessage && <div className="alert alert-success mt-4">{successMessage}</div>}
+            {errorMessage && <div className="alert alert-danger mt-4">{errorMessage}</div>}
         </div>
     );
 };
