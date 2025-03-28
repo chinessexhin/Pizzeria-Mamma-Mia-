@@ -1,48 +1,88 @@
-const jwt = require('jsonwebtoken');
+import { createContext, useState } from "react";
+import axios from "axios";
 
-const secretKey = 'mi-clave-secreta';
+export const AuthContext = createContext();
 
-const payload = {
-    userId: 123,
-    username: 'usuarioEjemplo'
-};
+const apiUrl = "http://localhost:5000/api";
 
-const options = {
-    expiresIn: '1h',
-};
-
-const token = jwt.sign(payload, secretKey, options);
-
-console.log('Token generado:', token);
-
-const verifyToken = (token) => {
+const fetchData = async (url, method, body = null, token = null) => {
     try {
-        const decoded = jwt.verify(token, secretKey);
-        console.log('Token válido, datos decodificados:', decoded);
-        return decoded;
-      } catch (error) {
-        console.error('Token no válido o expirado', error);
+        const headers = {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+        };
+
+        const response = await axios({
+            method,
+            url,
+            headers,
+            data: body, 
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return null;
     }
 };
 
-const decodedToken = verifyToken(token);
-if (decodedToken) {
-    const carrito = { carrito };
+const login = async (email, password) => {
+    const data = await fetchData(`${apiUrl}/auth/login`, 'POST', { email, password });
 
-await fetch("http://localhost:5000/api/checkout", {
-headers: {
-"Content-Type": "application/json",
-Authorization: `Bearer token_jwt`,
-},
-body: JSON.stringify({
-cart: carrito,
-}),
-});
+    if (data && data.token) {
+        localStorage.setItem('token', data.token); 
+        console.log('Login exitoso, token recibido:', data.token);
+    } else {
+        console.error('Error al autenticar:', data);
+    }
+};
 
-})
-.then(response => response.json())
-.then(data => console.log('Datos recibidos:', data))
-.catch(error => console.error('Error en la solicitud:', error));
+const register = async (email, password) => {
+    const data = await fetchData(`${apiUrl}/auth/register`, 'POST', { email, password });
+
+    if (data && data.token) {
+        localStorage.setItem('token', data.token);
+        console.log('Registro exitoso, token recibido:', data.token);
+    } else {
+        console.error('Error al registrarse:', data);
+    }
+};
+
+const checkout = async (carrito) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        console.error('Por favor inicie sesión');
+        return;
+    }
+
+    const data = await fetchData(`${apiUrl}/checkout`, 'POST', { cart: carrito }, token);
+    console.log('Datos recibidos del checkout:', data);
+};
+
+const getUserProfile = async () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        console.error('Por favor inicie sesión');
+        return;
+    }
+
+    const data = await fetchData(`${apiUrl}/auth/me`, 'GET', null, token);
+    console.log('Perfil del usuario:', data);
+};
 
 
+const main = async () => {
+    await login('test@example.com', '123123');
+    await getUserProfile();
+    const carrito = [
+        { productId: 1, nombre: 'Pizza Napolitana', cantidad: 1, precio: 5950 },
+        { productId: 2, nombre: 'Pizza Española', cantidad: 1, precio: 6950 },
+        { productId: 3, nombre: 'Pizza Pepperoni', cantidad: 1, precio: 6950 },
+    ];
+    await checkout(carrito);
+};
+
+main();
 
