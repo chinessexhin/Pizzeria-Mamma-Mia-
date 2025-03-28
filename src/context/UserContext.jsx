@@ -15,24 +15,17 @@ const UserProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email: credentials.email,
-                    password: credentials.password,
-                }),
+                body: JSON.stringify(credentials),
             });
 
             const data = await response.json();
 
             if (data.token) {
                 setToken(data.token);
-                setUser({
-                    email: data.email,
-                    id: data.id,
-                });
                 localStorage.setItem('token', data.token);
-                return true; 
+                await getUserProfile();
+                return true;
             }
-
             return false;
         } catch (error) {
             console.error('Error al hacer login:', error);
@@ -47,27 +40,52 @@ const UserProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email: credentials.email,
-                    password: credentials.password,
-                }),
+                body: JSON.stringify(credentials),
             });
 
             const data = await response.json();
 
             if (data.token) {
                 setToken(data.token);
-                setUser({
-                    email: data.email,
-                    id: data.id,
-                });
-                localStorage.setItem('token', data.token); 
+                localStorage.setItem('token', data.token);
+                await getUserProfile();
                 return true;
             }
             return false;
         } catch (error) {
             console.error('Error al registrar:', error);
             return false;
+        }
+    };
+
+    const getUserProfile = async () => {
+        const savedToken = localStorage.getItem('token');
+        if (!savedToken) {
+            console.error('No hay token disponible, por favor inicie sesión');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${apiUrl}/me`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${savedToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.email) {
+                setUser({
+                    id: data.id,
+                    email: data.email,
+                });
+            } else {
+                console.error('Error al obtener perfil:', data);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de perfil:', error);
         }
     };
 
@@ -78,7 +96,7 @@ const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, token, login, register, logout }}>
+        <UserContext.Provider value={{ user, token, login, register, logout, getUserProfile }}>
             {children}
         </UserContext.Provider>
     );
