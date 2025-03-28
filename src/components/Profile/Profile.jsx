@@ -1,9 +1,18 @@
-const Profile = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+import { useContext, useEffect } from 'react';
+import { UserContext } from './UserProvider';
 
-export default Profile
+const Profile = () => {
+    const { user, getUserProfile } = useContext(UserContext);
+
+    useEffect(() => {
+        getUserProfile();
+    }, []);
+
+    return (
+        <div>
+            {user ? <p>Bienvenido, {user.email}</p> : <p>No hay usuario autenticado</p>}
+        </div>
+    );
+};
+
+export default Profile;
