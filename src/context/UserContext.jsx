@@ -3,16 +3,18 @@ import { createContext, useState } from 'react';
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-    const [ user, setUser ] = useState(null);
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(false);
 
     const login = (credentials) => {
-        if(credentials.email === "admin@aidem.com" && credentials.password === "123456"){
+        if (credentials.email === "admin@aidem.com" && credentials.password === "123456") {
             setUser({
-             id: 1,
-             name: "aidem",
-             email: credential.email,
-             role: "admin",
+                id: 1,
+                name: "aidem",
+                email: credentials.email,
+                role: "admin",
             });
+            setToken(true);
             return true;
         }
         return false;
@@ -20,11 +22,12 @@ const UserProvider = ({ children }) => {
 
     const logout = () => {
         setUser(null);
-    }
+        setToken(false);
+    };
 
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
-            { children }
+        <UserContext.Provider value={{ user, token, login, logout }}>
+            {children}
         </UserContext.Provider>
     );
 };
